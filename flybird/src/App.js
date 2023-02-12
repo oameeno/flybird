@@ -5,14 +5,16 @@ import { useEffect, useState } from "react";
 const BIRD_SIZE = 20;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 500;
-const GRAVITY = 3;
+const GRAVITY = 6;
+const JUMP_HEIGHT = 100;
 
 function App() {
   const [birdPosition, setBirdPosition] = useState(250);
+  const [gameHasStarted, setGameHasStarted] = useState(false);
 
 useEffect(() => {
   let timeId;
-  if (birdPosition < GAME_HEIGHT - BIRD_SIZE) {
+  if (gameHasStarted && birdPosition < GAME_HEIGHT - BIRD_SIZE) {
     timeId = setInterval(() => {
       setBirdPosition((birdPosition) => birdPosition + GRAVITY);
     }, 24);
@@ -20,10 +22,22 @@ useEffect(() => {
 return () => {
   clearInterval(timeId);
 };
-});
+}, [birdPosition, gameHasStarted]);
+
+
+const handleClick = () => {
+  let newBirdPosition = birdPosition - JUMP_HEIGHT;
+  if (!gameHasStarted) {
+    setGameHasStarted(true);
+  } else if (newBirdPosition < 0) {
+    newBirdPosition(0);
+  } else {
+  setBirdPosition(newBirdPosition);
+  }
+};
 
   return (
-    <Div>
+    <Div onClick={handleClick}>
       <GameBox height={GAME_HEIGHT} width={GAME_WIDTH}>
       <Bird size={BIRD_SIZE} top={birdPosition} />
       </GameBox>
