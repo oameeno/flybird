@@ -44,20 +44,31 @@ useEffect(() => {
   }
   else {
     setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
-    setObstacleHeight(Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP)));
+    setObstacleHeight(Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
+    );
+    setScore(score => score + 1);
   }
-});
+}, [gameHasStarted, obstacleLeft]);
 
-const handleClick = () => {
+useEffect(() => {
+  const hasHitWithTopObstacle = birdPosition >= 0 && birdPosition < obstacleHeight;
+  const hasHitWithBottomObstacle = birdPosition <= 500 && birdPosition >= 500 - bottomObstacleHeight;
+
+  if (obstacleLeft >= 0 && obstacleLeft <= OBSTACLE_WIDTH && (hasHitWithTopObstacle || hasHitWithBottomObstacle)
+   ) {setGameHasStarted(false);
+  }
+}, [birdPosition, obstacleHeight, bottomObstacleHeight, obstacleLeft]);
+
+function handleClick() {
   let newBirdPosition = birdPosition - JUMP_HEIGHT;
   if (!gameHasStarted) {
     setGameHasStarted(true);
   } else if (newBirdPosition < 0) {
     newBirdPosition(0);
   } else {
-  setBirdPosition(newBirdPosition);
+    setBirdPosition(newBirdPosition);
   }
-};
+}
 
   return (
     <Div onClick={handleClick}>
@@ -78,6 +89,7 @@ const handleClick = () => {
 
       <Bird size={BIRD_SIZE} top={birdPosition} />
       </GameBox>
+      <span> {score} </span>
     </Div>
   );
 }
@@ -97,6 +109,12 @@ const Div = styled.div`
 display: flex;
 width: 100%;
 justify-content: center;
+& span{
+  color: white;
+  font-size = 24px;
+  font-weight: bold;
+  position: absolute;
+}
 `;
 
 const GameBox = styled.div`
