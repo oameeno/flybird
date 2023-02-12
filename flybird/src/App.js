@@ -5,11 +5,22 @@ import { useEffect, useState } from "react";
 const BIRD_SIZE = 20;
 const GAME_WIDTH = 500;
 const GAME_HEIGHT = 500;
+const GRAVITY = 3;
 
 function App() {
   const [birdPosition, setBirdPosition] = useState(250);
 
-  useEffect(() => {});
+useEffect(() => {
+  let timeId;
+  if (birdPosition < GAME_HEIGHT - BIRD_SIZE) {
+    timeId = setInterval(() => {
+      setBirdPosition((birdPosition) => birdPosition + GRAVITY);
+    }, 24);
+}
+return () => {
+  clearInterval(timeId);
+};
+});
 
   return (
     <Div>
